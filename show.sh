@@ -89,7 +89,7 @@ function usage() {
   echo "Usage: $0 <task> [arguments]";
   echo "";
   echo "Tasks";
-  echo "  add <image> <title> [exhibit_dir] [iter] [msize]";
+  echo "  add <image> <title> [iter] [msize] [exhibit_dir]";
   echo "    image:       The image you wish to add";
   echo "    title:       The title of the exhibit";
   echo "    exhibit_dir: The output directory (DEFAULT = $EDIR)";
@@ -126,9 +126,9 @@ case "$task" in
 
     img=$2;
     name=$3;
-    edir=$4;  if [ ! -n "$edir"  ]; then edir=$EDIR; fi;
-    iter=$5;  if [ ! -n "$iter"  ]; then iter=$ITER;   fi;
-    msize=$6; if [ ! -n "$msize" ]; then msize=$MSIZE; fi;
+    iter=$4;  if [ ! -n "$iter"  ]; then iter=$ITER;   fi;
+    msize=$5; if [ ! -n "$msize" ]; then msize=$MSIZE; fi;
+    edir=$6;  if [ ! -n "$edir"  ]; then edir=$EDIR; fi;
     make_exhibit "$img" "$edir/$name" "$iter" "$msize";
     ;;
 
