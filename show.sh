@@ -84,36 +84,80 @@ function make_exhibit() {
 
 ###############################################################################
 
+function usage() {
+
+  echo "Usage: $0 <task> [arguments]";
+  echo "";
+  echo "Tasks";
+  echo "  add <image> <title> [exhibit_dir] [iter] [msize]";
+  echo "    image:       The image you wish to add";
+  echo "    title:       The title of the exhibit";
+  echo "    exhibit_dir: The output directory (DEFAULT = $EDIR)";
+  echo "    iter:        The number of iterations to perform (DEFAULT = $ITER)";
+  echo "    msize:       The maximum size of the image (DEFAULT = $MSIZE)";
+  echo "";
+  echo "  start [exhibit_dir] [time]";
+  echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
+  echo "    time:        The seconds delay between images in slideshow (DEFAULT = $TIME)";
+  echo "";
+  echo "  loop [exhibit_dir] [time]";
+  echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
+  echo "    time:        The seconds delay between images in slideshow (DEFAULT = $TIME)";
+  echo "";
+  echo "  end";
+  echo "    Due to the way feh works, if you start a loop, you must end it like this.";
+  echo "";
+  echo "Example usage";
+  echo "  \$ $0 add lena.jpg lena # To add an image";
+  echo "  \$ $0 start             # To display all images once";
+  echo "  \$ $0 loop              # To display all images, forever";
+  exit 1;
+}
+
+###############################################################################
+
 task=$1;
 
 case "$task" in
   "add")
+   if [ $# -lt 3 ] || [ $# -gt 6 ]; then
+     usage $0;
+   fi
+
     img=$2;
-    outdir=$3;
-    iter=$4;  if [ ! -n "$iter"  ]; then iter=$ITER;   fi;
-    msize=$5; if [ ! -n "$msize" ]; then msize=$MSIZE; fi;
-    make_exhibit "$img" "$outdir" "$iter" "$msize";
+    name=$3;
+    edir=$4;  if [ ! -n "$edir"  ]; then edir=$EDIR; fi;
+    iter=$5;  if [ ! -n "$iter"  ]; then iter=$ITER;   fi;
+    msize=$6; if [ ! -n "$msize" ]; then msize=$MSIZE; fi;
+    make_exhibit "$img" "$edir/$name" "$iter" "$msize";
     ;;
 
   "start")
+    if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+      usage $0;
+    fi
+
     edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
     time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
     ls -t -d "$edir"/*/ | while read exhibit; do
       feh -D $time -F -Z --cycle-once `prepare_list $exhibit`;
-      if [ $? -gt 0 ]; then
-        return 1;
-      fi
     done
     ;;
 
   "loop")
     while [ True ]; do
-      $0 start;
-      if [ $? -gt 0 ]; then
-        return 1;
-      fi
+      $0 start $2 $3;
     done
+    ;;
+   "end")
+
+     ps x -o  "%r %c" | grep show.sh | awk '{print $1;}' | uniq | while read g;
+       do kill -9 "-$g";
+     done
+     ;;
+  *)
+    usage $0;
     ;;
 esac;
 
-return 0
+exit 0
