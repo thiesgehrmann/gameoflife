@@ -49,4 +49,5 @@ Exhibition functionality
 ./show.sh add lena.jpg lena # To add an image
 ./show.sh start             # To display all images once
 ./show.sh loop              # To display all images, forever
+./show.sh end               # To end a loop you started
 ```
