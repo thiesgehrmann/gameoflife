@@ -10,12 +10,12 @@ Additional tools create a slideshow with a starting point generated from an imag
 Dependencies
 =============
 
-For core functionality
+For core functionality:
 
   * Matplotlib: http://matplotlib.org/
   * Numpy: http://www.numpy.org/
 
-For exhibition functionality
+For exhibition functionality:
 
   * Imagemagick: http://www.imagemagick.org/
   * Feh: http://feh.finalrewind.org/
@@ -36,7 +36,7 @@ IMG  = [ (3,3), (3,4), (3,5) ]; # A list of co-ordinates which are alive
 dim0 = 10;                      # The first dimension
 dim1 = 10;                      # The second dimension
 iter = 10;                      # The number of iterations to perform
-odir = 'oscilator';             # The output directory for the images
+odir = 'oscillator';            # The output directory for the images
 G = gol.gol(dim0, dim1, IMG);   # Create the GOL object
 for i in xrange(iter):          # Perform the iterations
   G.step();
