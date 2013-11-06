@@ -10,10 +10,10 @@ Additional tools create a slideshow with a starting point generated from an imag
 Dependencies
 =============
 
-  * Imagemagick: [http://www.imagemagick.org/]
-  * Feh: [http://feh.finalrewind.org/]
-  * Matplotlib: [http://matplotlib.org/]
-  * Numpy: [http://www.numpy.org/]
+  * Imagemagick: http://www.imagemagick.org/
+  * Feh: http://feh.finalrewind.org/
+  * Matplotlib: http://matplotlib.org/
+  * Numpy: http://www.numpy.org/
 
 Usage
 ======
