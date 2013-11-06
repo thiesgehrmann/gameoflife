@@ -40,8 +40,8 @@ G.draw(odir, 'png');            # Export the images to 'odir'
 
 Exhibition functionality
 -------------------------
-```shell
-$ ./show.sh add lena.jpg lena # To add an image
-$ ./show.sh start             # To display all images once
-$ ./show.sh loop              # To display all images, forever
+```bash
+./show.sh add lena.jpg lena # To add an image
+./show.sh start             # To display all images once
+./show.sh loop              # To display all images, forever
 ```
