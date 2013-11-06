@@ -27,7 +27,7 @@ The gol class is a very, very simple, bare-bones implementation of the Game of L
 
 ```python
 import gol;                     # Import the library
-IMG  = [ (3,3), (3,4), (3,5) ]; # The initial conditions (a list of co-ordinates which are alive)
+IMG  = [ (3,3), (3,4), (3,5) ]; # A list of co-ordinates which are alive
 dim0 = 10;                      # The first dimension
 dim1 = 10;                      # The second dimension
 iter = 10;                      # The number of iterations to perform
