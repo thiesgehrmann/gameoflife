@@ -5,18 +5,51 @@
 ITER=100;
 MSIZE=250;
 EDIR="exhibits"
+MOTF="montage.png";
 
 TIME=0.2
 ORIG='GOLS_0_ORIG.png';
 GRAY='GOLS_1_GRAY.png';
 GSML='GOLS_2_GSML.png';
 FRST='GOLS_3_0000000000.png';
+SCND='GOLS_3_0000000001.png';
+THRD='GOLS_3_0000000002.png';
+###############################################################################
+
+function make_montage() {
+
+  local dir=$1;
+  local outf=$2;
+  local n=`ls $dir | grep '^GOLS_3_[0-9]*.png$' | wc -l`;
+
+  local steps=("Original" "Grayscale" "Initial condition" "First step" "Second step");
+  local lst="$ORIG $GRAY $FRST $SCND $THRD";
+
+  local i=0;
+  local P="";
+  for img in $lst; do
+    if [ -e "$dir/$img" ]; then
+      local tmpi=`mktemp`".png";
+      convert "$dir/$img" -resize 250x250\> -background Orange label:"${steps[i]}" -gravity Center -append $tmpi;
+      P="$P $tmpi";
+      i=$((i+1));
+    fi
+  done
+
+  local P=($P);
+  local np=${#P[@]};
+  local size=`identify "${P[0]}" | cut -d\  -f3`;
+
+  montage ${P[@]} -tile ${np}x1 -geometry $size+1+1 $outf;
+  rm ${P[@]};
+
+}
 
 ###############################################################################
 
 function prepare_list() {
-  dir=$1;
-  n=`ls $dir | grep '^GOLS_3_[0-9]*.png$' | wc -l`;
+  local dir=$1;
+  local n=`ls $dir | grep '^GOLS_3_[0-9]*.png$' | wc -l`;
 
   for i in `seq 1 5`; do
     echo "$dir/$ORIG";
@@ -78,7 +111,7 @@ function make_exhibit() {
 
   convert "$input"                  -resize $size   "$outdir/GOLS_0_ORIG.png";
   convert "$outdir/GOLS_0_ORIG.png" -type Grayscale "$outdir/GOLS_1_GRAY.png";
-  convert "$outdir/grayscale.png"   -resize $size   "$outdir/GOLS_2_GSML.png";
+  convert "$outdir/grayscale.png"   -sample $size   "$outdir/GOLS_2_GSML.png";
 
 }
 
@@ -107,6 +140,11 @@ function usage() {
   echo "  end";
   echo "    Due to the way feh works, if you start a loop, you must end it like this.";
   echo "";
+  echo "  montage <title> [outf] [exhibit_dir]";
+  echo "    title:       The title of the exhibit";
+  echo "    outf:        The output file (DEFAULT = $MOTF)";
+  echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
+  echo ""
   echo "Example usage";
   echo "  \$ $0 add lena.jpg lena # To add an image";
   echo "  \$ $0 start             # To display all images once";
@@ -120,9 +158,9 @@ task=$1;
 
 case "$task" in
   "add")
-   if [ $# -lt 3 ] || [ $# -gt 6 ]; then
-     usage $0;
-   fi
+    if [ $# -lt 3 ] || [ $# -gt 6 ]; then
+      usage $0;
+    fi
 
     img=$2;
     name=$3;
@@ -149,12 +187,24 @@ case "$task" in
       $0 start $2 $3;
     done
     ;;
-   "end")
 
-     ps x -o  "%r %c" | grep show.sh | awk '{print $1;}' | uniq | while read g;
-       do kill -9 "-$g";
-     done
-     ;;
+  "end")
+
+    ps x -o  "%r %c" | grep show.sh | awk '{print $1;}' | uniq | while read g;
+      do kill -9 "-$g";
+    done
+    ;;
+
+  "montage")
+    if [ $# -lt 2 ] || [ $# -gt 4 ]; then
+      usage $0;
+    fi
+
+    name=$2;
+    motf=$3; if [ ! -n "$motf" ]; then motf=$MOTF; fi;
+    edir=$4; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
+    make_montage "$edir/$name" $motf;
+    ;;
   *)
     usage $0;
     ;;
