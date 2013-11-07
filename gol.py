@@ -1,6 +1,9 @@
 import numpy as np;
 import matplotlib.pyplot as plt;
 import sys;
+import os;
+
+###############################################################################
 
 class gol:
 
@@ -8,9 +11,9 @@ class gol:
   dim1 = 0;
   iter = 0;
 
-  C        = None;
-  P        = None;
-  neighmap = None;
+  C        = None; # Current state
+  P        = None; # Past states
+  neighmap = None; # Neighborhood map for each cell, precomputed.
 
   #############################################################################
 
@@ -78,6 +81,7 @@ class gol:
   #############################################################################
 
   def draw(self, loc, ftype):
+    os.mkdir(loc);
     dpi   = 150;
     fac   = 5;
     size1 = fac * float(self.dim0) / float(self.dim1)
@@ -127,6 +131,18 @@ def mm(i, j, dim0, dim1):
 ###############################################################################
 
 def readIMG(fname):
+  """ (dim0, dim1, IMG) = readIMG(fname);
+
+  fname = a filename which contains:
+    dim0,dim1
+    x1,y1
+    x2,y2
+    ...
+
+  dim0 = dimension 0;
+  dim1 = dimension 1;
+  IMG  = a set of coordinates which are alive
+  """
 
   fd = open(fname, 'r');
 
