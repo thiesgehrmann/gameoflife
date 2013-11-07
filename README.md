@@ -5,7 +5,7 @@ A simple game of life machine written in python.
 
 Additional tools create a slideshow with a starting point generated from an image.
 
-![An example of the slideshow](/montage.png)
+![An example of the slideshow](/montage.gif)
 
 Dependencies
 =============
