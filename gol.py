@@ -102,6 +102,7 @@ class gol:
       fig = plt.imshow(IMG, interpolation='nearest');
       plt.axis('off');
       plt.savefig('%s/%010d.%s' % (loc, k, ftype), bbox_inches='tight', figsize=(size1, size2), dpi=dpi);
+      plt.cls();
     #efor
   #edef
 
