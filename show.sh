@@ -7,7 +7,7 @@ MSIZE=250;
 EDIR="exhibits"
 MOTF="montage.png";
 
-TIME=0.2
+TIME=0.05
 ORIG='GOLS_0_ORIG.png';
 GRAY='GOLS_1_GRAY.png';
 GSML='GOLS_2_GSML.png';
@@ -49,25 +49,35 @@ function make_montage() {
 
 function prepare_list() {
   local dir=$1;
+  local time=$2;
   local n=`ls $dir | grep '^GOLS_3_[0-9]*.png$' | wc -l`;
+  local s=`echo "1/$time" | bc`;
 
-  for i in `seq 1 5`; do
-    echo "$dir/$ORIG";
+  local lst=`mktemp`
+
+  echo -en "" > $lst;
+  for i in `seq 1 $s`; do
+    echo "$dir/$ORIG" >> $lst;
   done
-  for i in `seq 1 5`; do
-    echo "$dir/$GRAY"
+  for i in `seq 1 $s`; do
+    echo "$dir/$GRAY" >> $lst;
   done
-  for i in `seq 1 5`; do
-    echo "$dir/$GSML"
+  for i in `seq 1 $s`; do
+    echo "$dir/$GSML" >> $lst;
   done
-  for i in `seq 1 5`; do
-    echo "$dir/$FRST";
+  for i in `seq 1 $s`; do
+    echo "$dir/$FRST" >> $lst;
   done
 
   for i in `seq 1 $((n-1))`; do
-    printf "$dir/GOLS_3_%010d.png\n" $i;
+    fr=`echo "scale=1;((1/$time) * (1-(1/(1 + e(-($i-10)/10)) )))" | bc -l | cut -d. -f1`;
+    if [ $fr -eq 0 ]; then fr=1; fi
+    for j in `seq 1 $fr`; do
+      printf "$dir/GOLS_3_%010d.png\n" $i >> $lst;
+    done
   done
 
+  echo $lst;
 }
 
 ###############################################################################
@@ -178,7 +188,10 @@ case "$task" in
     edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
     time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
     ls -t -d "$edir"/*/ | while read exhibit; do
-      feh -D $time -F -Z --cycle-once `prepare_list $exhibit`;
+      lst=`prepare_list $exhibit $time`;
+      feh -D $time -F -Z --cycle-once --filelist $lst;
+      cat $lst | uniq -c;
+      rm $lst
     done
     ;;
 
