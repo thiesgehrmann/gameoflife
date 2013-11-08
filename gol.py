@@ -62,10 +62,7 @@ class gol:
 
   def step(self):
     N = [];
-    V = set([]);
-    for cell in self.C:
-      V = V | self.neighmap[cell];
-    #efor
+    V = reduce(lambda x,y: x.union(y), [ self.neighmap[cell] for cell in self.C ], set());
 
     for cell in V:
       if self.state(cell):
@@ -102,7 +99,7 @@ class gol:
       fig = plt.imshow(IMG, interpolation='nearest');
       plt.axis('off');
       plt.savefig('%s/%010d.%s' % (loc, k, ftype), bbox_inches='tight', figsize=(size1, size2), dpi=dpi);
-      plt.cls();
+      plt.cla();
     #efor
   #edef
 
@@ -110,11 +107,10 @@ class gol:
 
 ###############################################################################
 
-nb = lambda i,j : [ (i-1, j-1), (i, j-1), (i+1,j-1), \
-                    (i-1, j),             (i+1, j),  \
-                    (i-1, j+1), (i, j+1), (i+1, j+1) ];
 def neighborhood(i, j, dim0, dim1):
-  return set([ mm(a,b, dim0, dim1) for (a,b) in nb(i, j) ]);
+  return set([ mm(a,b, dim0, dim1) for (a,b) in [ (i-1, j-1), (i, j-1), (i+1,j-1), \
+                                                  (i-1, j),             (i+1, j),  \
+                                                  (i-1, j+1), (i, j+1), (i+1, j+1) ] ]);
 #edef
 
 ###############################################################################
