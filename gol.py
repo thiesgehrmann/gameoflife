@@ -81,7 +81,11 @@ class gol:
   #############################################################################
 
   def draw(self, loc, ftype):
-    os.mkdir(loc);
+
+    if not(os.path.isdir(loc)):
+      os.mkdir(loc);
+    #fi
+
     dpi   = 150;
     fac   = 5;
     size1 = fac * float(self.dim0) / float(self.dim1)
