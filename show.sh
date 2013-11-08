@@ -190,7 +190,6 @@ case "$task" in
     ls -t -d "$edir"/*/ | while read exhibit; do
       lst=`prepare_list $exhibit $time`;
       feh -D $time -F -Z --cycle-once --filelist $lst;
-      cat $lst | uniq -c;
       rm $lst
     done
     ;;
