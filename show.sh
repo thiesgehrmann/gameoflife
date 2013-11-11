@@ -53,9 +53,8 @@ function prepare_list() {
   local n=`ls $dir | grep '^GOLS_3_[0-9]*.png$' | wc -l`;
   local s=`echo "1/$time" | bc`;
 
-  local lst=`mktemp`
+  local lst="$3";
 
-  echo -en "" > $lst;
   for i in `seq 1 $s`; do
     echo "$dir/$ORIG" >> $lst;
   done
@@ -76,8 +75,6 @@ function prepare_list() {
       printf "$dir/GOLS_3_%010d.png\n" $i >> $lst;
     done
   done
-
-  echo $lst;
 }
 
 ###############################################################################
@@ -187,11 +184,14 @@ case "$task" in
 
     edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
     time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
+    lst=`mktemp`;
+    echo -en "" > $lst;
+
     ls -t -d "$edir"/*/ | while read exhibit; do
-      lst=`prepare_list $exhibit $time`;
-      feh -D $time -F -Z --cycle-once --filelist $lst;
-      rm $lst
+      prepare_list $exhibit $time $lst;
     done
+    feh -D $time -F -Z --cycle-once --filelist $lst;
+    rm $lst
     ;;
 
   "loop")
