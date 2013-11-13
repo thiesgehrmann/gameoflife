@@ -151,6 +151,11 @@ function usage() {
   echo "    title:       The title of the exhibit";
   echo "    outf:        The output file (DEFAULT = $MOTF)";
   echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
+  echo "";
+  echo "  effect <effect> <title>";
+  echo "    effect:     The effect you with to apply ($EFCTS)";
+  echo "    title:      The exhibit you wish to apply it to";
+  echo "    exhbit_dir: The input directory (DEFAULT = $EDIR)";
   echo ""
   echo "Example usage";
   echo "  \$ $0 add lena.jpg lena # To add an image";
@@ -160,6 +165,8 @@ function usage() {
 }
 
 ###############################################################################
+
+source 'effects.sh'
 
 task=$1;
 
@@ -217,6 +224,19 @@ case "$task" in
     edir=$4; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
     make_montage "$edir/$name" $motf;
     ;;
+
+  "effect")
+    if [ $# -lt 2 ] || [ $# -gt 4 ]; then
+      usage $0;
+    fi
+
+    effect="effect_$2";
+    name="$3";
+    edir="$4"; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
+
+    $effect $edir/$name
+    ;;
+
   *)
     usage $0;
     ;;
