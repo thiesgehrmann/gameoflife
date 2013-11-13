@@ -6,6 +6,7 @@ ITER=100;
 MSIZE=250;
 EDIR="exhibits"
 MOTF="montage.png";
+CLN_SEQ="clean_seq";
 
 TIME=0.05
 ORIG='GOLS_0_ORIG.png';
@@ -87,7 +88,7 @@ function make_exhibit() {
   local msize=$4;
 
   rm -rf $outdir &> /dev/null;
-  mkdir -p $outdir &> /dev/null;
+  mkdir -p $outdir/$CLN_SEQ &> /dev/null;
 
   #############################################################################
 
@@ -102,23 +103,27 @@ function make_exhibit() {
 
   #############################################################################
 
-  ./gol_wrapper.py "$outdir/IMG.RAW" "$outdir" "$iter";
+  ./gol_wrapper.py "$outdir/IMG.RAW" "$outdir/$CLN_SEQ" "$iter";
 
   #############################################################################
 
   local i=0;
-  ls "$outdir" | grep '^[0-9]*.png$' | while read img; do
+  ls "$outdir/$CLN_SEQ" | grep '^[0-9]*.png$' | while read img; do
     i=$((i+1));
     printf '\rProcess %010d/%d' $i $((iter+1));
-    convert "$outdir/$img" -trim -threshold 10% -negate "$outdir/GOLS_3_$img";
-    rm "$outdir/$img";
+    convert "$outdir/$CLN_SEQ/$img" -trim -threshold 10% -negate "$outdir/$CLN_SEQ/GOLS_3_$img";
+    cp "./$outdir/$CLN_SEQ/GOLS_3_$img" "$outdir/";
+    rm "$outdir/$CLN_SEQ/$img";
   done
-  local size=`identify "$outdir/GOLS_3_0000000000.png" | cut -d\  -f3`;
+  local size=`identify "$outdir/$CLN_SEQ/GOLS_3_0000000000.png" | cut -d\  -f3`;
   echo "";
 
-  convert "$input"                  -resize $size   "$outdir/GOLS_0_ORIG.png";
-  convert "$outdir/GOLS_0_ORIG.png" -type Grayscale "$outdir/GOLS_1_GRAY.png";
-  convert "$outdir/grayscale.png"   -sample $size   "$outdir/GOLS_2_GSML.png";
+  convert "$input"                  -resize $size   "$outdir/$CLN_SEQ/$ORIG";
+  cp "$outdir/$CLN_SEQ/$ORIG" "$outdir/";
+  convert "$outdir/$CLN_SEQ/$ORIG" -type Grayscale "$outdir/$CLN_SEQ/$GRAY";
+  cp "$outdir/$CLN_SEQ/$GRAY" "$outdir/";
+  convert "$outdir/grayscale.png"   -sample $size   "$outdir/$CLN_SEQ/$GSML";
+  cp "$outdir/$CLN_SEQ/$GSML" "$outdir/";
 
 }
 
@@ -166,7 +171,7 @@ function usage() {
 
 ###############################################################################
 
-source 'effects.sh'
+source './effects.sh'
 
 task=$1;
 
