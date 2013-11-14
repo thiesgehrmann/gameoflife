@@ -154,9 +154,9 @@ function usage() {
   echo "    outf:        The output file (DEFAULT = $MOTF)";
   echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
   echo "";
-  echo "  effect <title> <effect> [exhibit_dir]";
+  echo "  effect <title> <effects> [exhibit_dir]";
   echo "    title:      The exhibit you wish to apply it to";
-  echo "    effect:     The effect you with to apply ($EFCTS)";
+  echo "    effects:    The effects you with to apply (DEFAULT=$EFCTS)";
   echo "    exhbit_dir: The input directory (DEFAULT = $EDIR)";
   echo ""
   echo "Example usage";

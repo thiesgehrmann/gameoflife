@@ -43,6 +43,43 @@ for i in xrange(iter):          # Perform the iterations
 G.draw(odir, 'png');            # Export the images to 'odir'
 ```
 
+Exhibition Usage
+-----------------
+
+```Usage: ./show.sh <task> [arguments]
+
+Tasks
+  add <image> <title> [iter] [msize] [exhibit_dir]
+    image:       The image you wish to add
+    title:       The title of the exhibit
+    exhibit_dir: The output directory (DEFAULT = exhibits)
+    iter:        The number of iterations to perform (DEFAULT = 100)
+    msize:       The maximum size of the image (DEFAULT = 250)
+
+  start [exhibit_dir] [time]
+    exhibit_dir: The input directory (DEFAULT = exhibits)
+    time:        The seconds delay between images in slideshow (DEFAULT = 0.05)
+
+  loop [exhibit_dir] [time]
+    exhibit_dir: The input directory (DEFAULT = exhibits)
+    time:        The seconds delay between images in slideshow (DEFAULT = 0.05)
+
+  montage <title> [outf] [exhibit_dir]
+    title:       The title of the exhibit
+    outf:        The output file (DEFAULT = montage.png)
+    exhibit_dir: The input directory (DEFAULT = exhibits)
+
+  effect <title> <effects> [exhibit_dir]
+    title:      The exhibit you wish to apply it to
+    effects:    The effects you with to apply (DEFAULT=reset,multiply,overlay,fade)
+    exhbit_dir: The input directory (DEFAULT = exhibits)
+
+Example usage
+  $ ./show.sh add lena.jpg lena # To add an image
+  $ ./show.sh start             # To display all images once
+  $ ./show.sh loop              # To display all images, forever
+```
+
 Exhibition functionality
 -------------------------
 ```bash
