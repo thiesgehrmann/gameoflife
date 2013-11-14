@@ -193,7 +193,7 @@ case "$task" in
 
     edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
     time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
-    cycl=$4; if [ -n "$cycl" ]; then cycl="--cycle-once"; fi;
+    cycl=$4; if [ "$cycl" == "loop" ]; then then cycl=""; else cycl="--cycle-once"; fi;
     lst=`mktemp`;
     echo -en "" > $lst;
 
@@ -205,7 +205,7 @@ case "$task" in
     ;;
 
   "loop")
-    $0 itart $2 $3;
+    $0 itart $2 $3 "loop";
     ;;
 
   "montage")
