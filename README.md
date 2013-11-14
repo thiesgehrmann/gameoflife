@@ -46,7 +46,8 @@ G.draw(odir, 'png');            # Export the images to 'odir'
 Exhibition Usage
 -----------------
 
-```Usage: ./show.sh <task> [arguments]
+```
+Usage: ./show.sh <task> [arguments]
 
 Tasks
   add <image> <title> [iter] [msize] [exhibit_dir]
