@@ -70,11 +70,11 @@ function prepare_list() {
   done
 
   for i in `seq 1 $((n-1))`; do
-    fr=`echo "scale=1;((1/$time) * (1-(1/(1 + e(-($i-10)/10)) )))" | bc -l | cut -d. -f1`;
-    if [ $fr -eq 0 ]; then fr=1; fi
-    for j in `seq 1 $fr`; do
+    #fr=`echo "scale=1;((1/$time) * (1-(1/(1 + e(-($i-10)/10)) )))" | bc -l | cut -d. -f1`;
+    #if [ $fr -eq 0 ]; then fr=1; fi
+    #for j in `seq 1 $fr`; do
       printf "$dir/GOLS_3_%010d.png\n" $i >> $lst;
-    done
+    #done
   done
 }
 
@@ -149,17 +149,14 @@ function usage() {
   echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
   echo "    time:        The seconds delay between images in slideshow (DEFAULT = $TIME)";
   echo "";
-  echo "  end";
-  echo "    Due to the way feh works, if you start a loop, you must end it like this.";
-  echo "";
   echo "  montage <title> [outf] [exhibit_dir]";
   echo "    title:       The title of the exhibit";
   echo "    outf:        The output file (DEFAULT = $MOTF)";
   echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
   echo "";
-  echo "  effect <effect> <title>";
-  echo "    effect:     The effect you with to apply ($EFCTS)";
+  echo "  effect <title> <effect> [exhibit_dir]";
   echo "    title:      The exhibit you wish to apply it to";
+  echo "    effect:     The effect you with to apply ($EFCTS)";
   echo "    exhbit_dir: The input directory (DEFAULT = $EDIR)";
   echo ""
   echo "Example usage";
@@ -196,27 +193,19 @@ case "$task" in
 
     edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
     time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
+    cycl=$4; if [ -n "$cycl" ]; then cycl="--cycle-once"; fi;
     lst=`mktemp`;
     echo -en "" > $lst;
 
     ls -t -d "$edir"/*/ | while read exhibit; do
       prepare_list $exhibit $time $lst;
     done
-    feh -D $time -F -Z --cycle-once --filelist $lst;
+    feh -D $time -F -Z $cycl --filelist $lst;
     rm $lst
     ;;
 
   "loop")
-    while [ True ]; do
-      $0 start $2 $3;
-    done
-    ;;
-
-  "end")
-
-    ps x -o  "%r %c" | grep show.sh | awk '{print $1;}' | uniq | while read g;
-      do kill -9 "-$g";
-    done
+    $0 itart $2 $3;
     ;;
 
   "montage")
@@ -235,11 +224,12 @@ case "$task" in
       usage $0;
     fi
 
-    effect="effect_$2";
-    name="$3";
-    edir="$4"; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
-
-    $effect $edir/$name
+    name="$2";
+    efcts="$3"; if [ ! -n "$efcts" ]; then efcts="$EFCTS"; fi;
+    edir="$4";   if [ ! -n "$edir" ]; then edir=$EDIR; fi;
+    for efct in `echo $efcts | tr ',' ' '`; do
+      effect_$efct "$edir/$name";
+    done
     ;;
 
   *)
