@@ -84,7 +84,8 @@ Example usage
 Exhibition functionality
 -------------------------
 ```bash
-./show.sh add lena.jpg lena # To add an image
-./show.sh start             # To display all images once
-./show.sh loop              # To display all images, forever
+./show.sh add lena.jpg lena 100    # To add an image, 100 iterations
+./show.sh effect lena overlay,fade # To add effects to an exhibition
+./show.sh start                    # To display all images once
+./show.sh loop                     # To display all images, forever
 ```
