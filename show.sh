@@ -186,26 +186,33 @@ case "$task" in
     make_exhibit "$img" "$edir/$name" "$iter" "$msize";
     ;;
 
-  "start")
-    if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+  "display")
+    if [ $# -lt 1 ] || [ $# -gt 4 ]; then
       usage $0;
     fi
 
     edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
     time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
-    cycl=$4; if [ "$cycl" == "loop" ]; then then cycl=""; else cycl="--cycle-once"; fi;
+    loop=$4;
     lst=`mktemp`;
     echo -en "" > $lst;
 
     ls -t -d "$edir"/*/ | while read exhibit; do
       prepare_list $exhibit $time $lst;
     done
-    feh -D $time -F -Z $cycl --filelist $lst;
-    rm $lst
+    feh $loop -D $time -F -Z --filelist $lst;
+    rm $lst;
     ;;
 
+  "start")
+    edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
+    time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
+    $0 display $edir $time "--cycle-once";
+    ;;
   "loop")
-    $0 itart $2 $3 "loop";
+    edir=$2; if [ ! -n "$edir" ]; then edir=$EDIR; fi;
+    time=$3; if [ ! -n "$time" ]; then time=$TIME; fi;
+    $0 display $edir $time "";
     ;;
 
   "montage")
