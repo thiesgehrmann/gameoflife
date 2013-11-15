@@ -111,7 +111,7 @@ function make_exhibit() {
   ls "$outdir/$CLN_SEQ" | grep '^[0-9]*.png$' | while read img; do
     i=$((i+1));
     printf '\rProcess %010d/%d' $i $((iter+1));
-    convert "$outdir/$CLN_SEQ/$img" -trim -threshold 10% -negate "$outdir/$CLN_SEQ/GOLS_3_$img";
+    convert "$outdir/$CLN_SEQ/$img" -trim +repage -type Grayscale -normalize -negate "$outdir/$CLN_SEQ/GOLS_3_$img";
     cp "./$outdir/$CLN_SEQ/GOLS_3_$img" "$outdir/";
     rm "$outdir/$CLN_SEQ/$img";
   done

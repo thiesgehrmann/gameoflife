@@ -98,6 +98,7 @@ class gol:
       sys.stdout.flush();
       fig = plt.imshow(IMG, interpolation='nearest');
       plt.axis('off');
+      plt.set_cmap('RdBu');
       plt.savefig('%s/%010d.%s' % (loc, k, ftype), bbox_inches='tight', figsize=(size1, size2), dpi=dpi);
       plt.cla();
     #efor
