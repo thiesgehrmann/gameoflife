@@ -8,7 +8,7 @@ function effect_fade() {
   local tdir="$1";
   local n=`ls $dir | grep '^GOLS_3_[0-9]*.png$' | wc -l`;
 
-  i=10;
+  local i=10;
   for img in `ls $tdir | grep '^GOLS_3_[0-9]*.png$' | sort | tail -n10`; do
     convert "$tdir/$img" -fill black -colorize $i% "$tdir/$img";
     i=$((i+10));

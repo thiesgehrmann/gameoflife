@@ -3,6 +3,7 @@
 ###############################################################################
 
 ITER=100;
+LSIZE=5;
 MSIZE=250;
 EDIR="exhibits"
 MOTF="montage.png";
@@ -15,6 +16,7 @@ GSML='GOLS_2_GSML.png';
 FRST='GOLS_3_0000000000.png';
 SCND='GOLS_3_0000000001.png';
 THRD='GOLS_3_0000000002.png';
+
 ###############################################################################
 
 function make_montage() {
@@ -85,7 +87,8 @@ function make_exhibit() {
   local input=$1;
   local outdir=$2;
   local iter=$3;
-  local msize=$4;
+  local lsize=$4
+  local msize=$5;
 
   rm -rf $outdir &> /dev/null;
   mkdir -p $outdir/$CLN_SEQ &> /dev/null;
@@ -95,7 +98,7 @@ function make_exhibit() {
   echo "Performing preprocessing"
   convert "$input" -resize ${msize}x${msize}\>               "$outdir/original.png";
   convert "$outdir/original.png"  -type Grayscale  "$outdir/grayscale.png";
-  convert "$outdir/grayscale.png" -lat 3x3         "$outdir/threshold.png";
+  convert "$outdir/grayscale.png" -lat ${lsize}x${lsize}         "$outdir/threshold.png";
   convert "$outdir/threshold.png" -flip -rotate 90 "$outdir/threshold.txt";
 
   head    "$outdir/threshold.txt" -n1 | cut -d: -f2 | cut -d, -f1,2 | sed -e 's/ //g' >   "$outdir/IMG.RAW";
@@ -134,12 +137,14 @@ function usage() {
   echo "Usage: $0 <task> [arguments]";
   echo "";
   echo "Tasks";
-  echo "  add <image> <title> [iter] [msize] [exhibit_dir]";
+  echo "  add <image> <title> [iter] [lsize] [msize] [exhibit_dir]";
   echo "    image:       The image you wish to add";
   echo "    title:       The title of the exhibit";
   echo "    exhibit_dir: The output directory (DEFAULT = $EDIR)";
   echo "    iter:        The number of iterations to perform (DEFAULT = $ITER)";
+  echo "    lsize:       The size of the local area for the threshold (DEFAULT = $LSIZE)";
   echo "    msize:       The maximum size of the image (DEFAULT = $MSIZE)";
+  echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
   echo "";
   echo "  start [exhibit_dir] [time]";
   echo "    exhibit_dir: The input directory (DEFAULT = $EDIR)";
@@ -174,16 +179,17 @@ task=$1;
 
 case "$task" in
   "add")
-    if [ $# -lt 3 ] || [ $# -gt 6 ]; then
+    if [ $# -lt 3 ] || [ $# -gt 7 ]; then
       usage $0;
     fi
 
     img=$2;
     name=$3;
     iter=$4;  if [ ! -n "$iter"  ]; then iter=$ITER;   fi;
-    msize=$5; if [ ! -n "$msize" ]; then msize=$MSIZE; fi;
-    edir=$6;  if [ ! -n "$edir"  ]; then edir=$EDIR; fi;
-    make_exhibit "$img" "$edir/$name" "$iter" "$msize";
+    lsize=$5; if [ ! -n "$lsize" ]; then lsize=$LSIZE; fi;
+    msize=$6; if [ ! -n "$msize" ]; then msize=$MSIZE; fi;
+    edir=$7;  if [ ! -n "$edir"  ]; then edir=$EDIR; fi;
+    make_exhibit "$img" "$edir/$name" "$iter" "$lsize" "$msize";
     ;;
 
   "display")
